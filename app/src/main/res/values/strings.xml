@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">fromto-example</string>
+    <string name="java">fromto-example using Java</string>
+    <string name="kotlin">fromto-example using Kotlin</string>
+    <string name="restart">restart</string>
     <string name="action_settings">Settings</string>
 </resources>
