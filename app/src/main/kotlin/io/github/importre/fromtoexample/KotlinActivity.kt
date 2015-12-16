@@ -17,8 +17,10 @@ public class KotlinActivity : AppCompatActivity(), FtView {
     companion object {
         private val TAG: String = KotlinActivity::class.java.simpleName
 
-        // Declare [job1] and [job2].
-        // They should be static variables.
+        /*
+         * Declare [job1] and [job2].
+         * They should be static variables.
+         */
         private lateinit var job1: Observable<Int>
         private lateinit var job2: Observable<Int>
     }
@@ -94,6 +96,7 @@ public class KotlinActivity : AppCompatActivity(), FtView {
     }
 
     override fun onDestroy() {
+        // detach!
         fromTo.detach()
         super.onDestroy()
     }
