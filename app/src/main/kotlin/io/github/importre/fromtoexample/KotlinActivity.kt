@@ -16,6 +16,9 @@ public class KotlinActivity : AppCompatActivity(), FtView {
 
     companion object {
         private val TAG: String = KotlinActivity::class.java.simpleName
+
+        // Declare [job1] and [job2].
+        // They should be static variables.
         private lateinit var job1: Observable<Int>
         private lateinit var job2: Observable<Int>
     }
@@ -28,31 +31,43 @@ public class KotlinActivity : AppCompatActivity(), FtView {
         initUi()
 
         if (savedInstanceState == null) {
+            /*
+             * Initialize cached observables when Activity is created.
+             * When recreated, [FromTo] will connect to the observables again.
+             */
             initObservables()
         }
 
+        // Initialize actions.
         val actions = initActions()
+
+        // Create [FromTo] with actions
         fromTo = FromTo.create(actions.toList())
+
+        // Attach view to [FromTo] and execute
         fromTo.attach(this).execute()
     }
 
     private fun initActions(): Array<FtAction<*>> {
         val action1 = FtAction.Builder<Int>()
-                .from(job1)
-                .to { progress1.progress = it }
-                .done { Log.e(TAG, "done: progress1") }
-                .error { it.printStackTrace() }
+                .from(job1)                             // set from to your observable
+                .to { progress1.progress = it }         // invoked when job1.onNext is called
+                .done { Log.e(TAG, "done: progress1") } // invoked when job1.onCompleted is called
+                .error { it.printStackTrace() }         // invoked when job1.onError is called
                 .build()
         val action2 = FtAction.Builder<Int>()
-                .from(job2)
-                .to { progress2.progress = it }
-                .done { Log.e(TAG, "done: progress2") }
-                .error { it.printStackTrace() }
+                .from(job2)                             // required
+                .to { progress2.progress = it }         // optional
+                .done { Log.e(TAG, "done: progress2") } // optional
+                .error { it.printStackTrace() }         // optional
                 .build()
         return arrayOf(action1, action2)
     }
 
     private fun initObservables() {
+        // YOU SHOULD CALL cache()
+        // if you want to show data even though activity is recreated
+
         job1 = Observable
                 .create<Int> {
                     for (i in 0..100) {
@@ -83,17 +98,20 @@ public class KotlinActivity : AppCompatActivity(), FtView {
         super.onDestroy()
     }
 
+    // this method will be invoked by FromTo.actions
     override fun showLoading(show: Boolean) {
         progress.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 
     private fun initUi() {
         setSupportActionBar(toolbar)
-        restart.setOnClickListener {
-            fromTo.detach()
-            initObservables()
-            val actions = initActions()
-            fromTo.attach(this).execute(actions.toList())
-        }
+        restart.setOnClickListener { restart() }
+    }
+
+    private fun restart() {
+        fromTo.detach()
+        initObservables()
+        val actions = initActions()
+        fromTo.attach(this).execute(actions.toList())
     }
 }

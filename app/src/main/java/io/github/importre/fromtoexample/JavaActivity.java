@@ -153,11 +153,15 @@ public class JavaActivity extends AppCompatActivity implements FtView {
         findViewById(R.id.restart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fromTo.detach();
-                initObservables();
-                FtAction[] actions = initActions();
-                fromTo.attach(JavaActivity.this).execute(actions);
+                restart();
             }
         });
+    }
+
+    private void restart() {
+        fromTo.detach();
+        initObservables();
+        FtAction[] actions = initActions();
+        fromTo.attach(JavaActivity.this).execute(actions);
     }
 }
