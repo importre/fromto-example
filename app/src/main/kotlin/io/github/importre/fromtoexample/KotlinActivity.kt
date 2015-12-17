@@ -20,6 +20,7 @@ public class KotlinActivity : AppCompatActivity(), FtView {
         /*
          * Declare [job1] and [job2].
          * They should be static variables.
+         * See also [onCreate] and [initObservables].
          */
         private lateinit var job1: Observable<Int>
         private lateinit var job2: Observable<Int>
